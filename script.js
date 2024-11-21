@@ -2,6 +2,8 @@
 const svg = document.getElementById("drawing-area");
 const addCircleButton = document.getElementById("add-circle");
 const addRectangleButton = document.getElementById("add-rectangle");
+const radiusInput = document.getElementById("radius-input");
+const updateRadiusButton = document.getElementById("update-radius");
 const downloadButton = document.getElementById("download-svg");
 
 // SVGの命名空間
@@ -46,6 +48,30 @@ addCircleButton.addEventListener("click", () => {
   circle.setAttribute("fill", "blue");
   svg.appendChild(circle);
   enableDrag(circle);
+  selectElement(circle);
+});
+
+// 円を選択して編集可能にする
+function selectElement(element) {
+  selectedElement = element;
+  if (selectedElement && selectedElement.tagName === "circle") {
+    const radius = selectedElement.getAttribute("r");
+    radiusInput.value = radius; // 現在の半径を入力欄に表示
+  }
+}
+
+// 半径を更新
+updateRadiusButton.addEventListener("click", () => {
+  if (selectedElement && selectedElement.tagName === "circle") {
+    const newRadius = parseFloat(radiusInput.value);
+    if (!isNaN(newRadius) && newRadius > 0) {
+      selectedElement.setAttribute("r", newRadius.toString());
+    } else {
+      alert("Please enter a valid radius.");
+    }
+  } else {
+    alert("Select a circle to update its radius.");
+  }
 });
 
 // 矩形を追加
