@@ -21,6 +21,8 @@ const joint2AxisValue = document.getElementById("j2-axis-value");
 
 const toggleButton = document.getElementById("additional-line");
 let isAdditionalLineOn = false;
+let isDragging = false;
+let offsetX, offsetY, selectedElement;
 
 toggleButton.addEventListener("click", () => {
   isAdditionalLineOn = !isAdditionalLineOn;
@@ -32,17 +34,104 @@ toggleButton.addEventListener("click", () => {
   createModelButton.click(); // 再描画
 });
 
+joint1CxInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+joint1CyInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+joint1RadiusInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+joint2CxInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+joint2CyInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+joint2RadiusInput.addEventListener("input", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
 // 傾きスライダーの値をリアルタイムで表示
 joint1AxisInput.addEventListener("input", () => {
   joint1AxisValue.textContent = joint1AxisInput.value;
+
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
 });
 
 joint2AxisInput.addEventListener("input", () => {
   joint2AxisValue.textContent = joint2AxisInput.value;
+
+  clearCanvasButton.click(); // キャンバスをクリア
+  createModelButton.click(); // 再描画
+});
+
+// **2. ドラッグ機能を追加**
+svg.addEventListener("mousedown", (event) => {
+  if (event.target.classList.contains("draggable")) {
+    isDragging = true;
+    selectedElement = event.target;
+
+    // オフセットを計算
+    const cx = parseFloat(selectedElement.getAttribute("cx"));
+    const cy = parseFloat(selectedElement.getAttribute("cy"));
+    offsetX = event.clientX - cx;
+    offsetY = event.clientY - cy;
+
+    // カーソルを変更
+    selectedElement.style.cursor = "grabbing";
+  }
+});
+
+svg.addEventListener("mousemove", (event) => {
+  if (isDragging && selectedElement) {
+    // 新しい位置を計算
+    const newX = event.clientX - offsetX;
+    const newY = event.clientY - offsetY;
+
+    // 要素の位置を更新
+    selectedElement.setAttribute("cx", newX);
+    selectedElement.setAttribute("cy", newY);
+  }
+});
+
+svg.addEventListener("mouseup", () => {
+  if (isDragging) {
+    isDragging = false;
+    if (selectedElement) {
+      selectedElement.style.cursor = "grab";
+      selectedElement = null;
+    }
+  }
+});
+
+svg.addEventListener("mouseleave", () => {
+  if (isDragging) {
+    isDragging = false;
+    if (selectedElement) {
+      selectedElement.style.cursor = "grab";
+      selectedElement = null;
+    }
+  }
 });
 
 // モデルの描画
 createModelButton.addEventListener("click", () => {
+  clearCanvasButton.click(); // キャンバスをクリア
+
   const j1_cx = parseFloat(joint1CxInput.value); 
   const j1_cy = parseFloat(joint1CyInput.value); 
   const j1_radius = parseFloat(joint1RadiusInput.value); 
@@ -82,15 +171,28 @@ createModelButton.addEventListener("click", () => {
 
 // SVGをダウンロード
 downloadButton.addEventListener("click", () => {
+  // **1. バウンディングボックスを取得**
+  const bbox = svg.getBBox();
+
+  // **2. 新しいSVG要素を作成**
+  const clonedSvg = svg.cloneNode(true);
+  clonedSvg.setAttribute("width", bbox.width);
+  clonedSvg.setAttribute("height", bbox.height);
+  clonedSvg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+
+  // **3. SVGをシリアライズしてBlobを作成**
   const serializer = new XMLSerializer();
-  const svgBlob = new Blob([serializer.serializeToString(svg)], { type: "image/svg+xml" });
+  const svgData = serializer.serializeToString(clonedSvg);
+  const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
   const url = URL.createObjectURL(svgBlob);
 
+  // **4. ダウンロードリンクを作成してクリック**
   const link = document.createElement("a");
   link.href = url;
-  link.download = "drawing.svg";
+  link.download = "trimmed_drawing.svg";
   link.click();
 
+  // **5. メモリ解放**
   URL.revokeObjectURL(url);
 });
 

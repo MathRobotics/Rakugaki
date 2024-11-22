@@ -8,7 +8,7 @@ import { SVG_NS } from './utils.js'
  * @param {number} radius - 円の半径
  * @param {string} strokeColor - 円のストロークの色
  */
-export function drawCircle(svg, cx, cy, radius, strokeColor = 'black') {
+export function drawCircle(svg, cx, cy, radius, strokeColor = 'black', draggable = false) {
   const circle = document.createElementNS(SVG_NS, "circle");
   circle.setAttribute("cx", cx.toString());
   circle.setAttribute("cy", cy.toString());
@@ -16,6 +16,10 @@ export function drawCircle(svg, cx, cy, radius, strokeColor = 'black') {
   circle.setAttribute("fill", "none");
   circle.setAttribute("stroke", strokeColor);
   circle.setAttribute("stroke-width", "3");
+  if (draggable){
+    circle.setAttribute("class", "draggable"); // 移動可能なクラスを追加
+    circle.style.cursor = "grab";
+  }
   svg.appendChild(circle);
 }
 
@@ -24,7 +28,7 @@ export function drawCircle(svg, cx, cy, radius, strokeColor = 'black') {
  * @param {number} cx - 点のX座標
  * @param {number} cy - 点のY座標
  */
-export function drawPoint(svg, cx, cy, point_color = 'black') {
+export function drawPoint(svg, cx, cy, point_color = 'black', draggable = false) {
   const point = document.createElementNS(SVG_NS, "circle");
   point.setAttribute("cx", cx.toString());
   point.setAttribute("cy", cy.toString());
@@ -32,6 +36,10 @@ export function drawPoint(svg, cx, cy, point_color = 'black') {
   point.setAttribute("fill", "none");
   point.setAttribute("stroke", point_color);
   point.setAttribute("stroke-width", "1");
+  if (draggable){
+    point.setAttribute("class", "draggable"); // 移動可能なクラスを追加
+    point.style.cursor = "grab";
+  }
   svg.appendChild(point);
 }
 

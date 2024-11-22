@@ -5,7 +5,7 @@ import { getParallelControlPoints, filterOutsidePoints, filterOutsideSegments} f
 
 // モデルパラメータ
 const mLink = {
-  control_length: 50, // リンクの曲線におけるコントロールポイントと始点，終点との距離
+  control_length: 100, // リンクの曲線におけるコントロールポイントと始点，終点との距離
   joint_body_width: 15, // jointの円とbodyの円の距離
   link_body_width_raito: 0.9, // linkの幅
   body_curve_param : 0.5 
