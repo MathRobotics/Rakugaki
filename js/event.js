@@ -27,8 +27,17 @@ function createModel(svg, joint1Inputs, joint2Inputs, isAdditionalLineOn){
 
 export function initializeEvents(svg, 
   joint1Inputs, joint2Inputs,
-  createModelButton, clearCanvasButton, downloadButton) {
+  createModelButton, clearCanvasButton, downloadButton,
+  toggleButton) {
   let isAdditionalLineOn = false;
+
+  toggleButton.addEventListener("click", () => {
+    isAdditionalLineOn = !isAdditionalLineOn;
+    toggleButton.classList.toggle("on", isAdditionalLineOn); // クラスをトグル
+    toggleButton.textContent = isAdditionalLineOn ? "Additional Line On" : "Additional Line Off";
+
+    triggerRedraw();
+  });
 
   // **再描画関数**
   function triggerRedraw() {

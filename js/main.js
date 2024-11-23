@@ -15,6 +15,12 @@ const toggleButton = document.getElementById("additional-line");
 let isDragging = false;
 let offsetX, offsetY, selectedElement;
 
+// **1. 再描画関数**
+function triggerRedraw() {
+  clearCanvasButton.click();
+  createModelButton.click();
+}
+
 
 // **2. ドラッグ機能を追加**
 svg.addEventListener("mousedown", (event) => {
@@ -67,5 +73,5 @@ svg.addEventListener("mouseleave", () => {
 
 initializeEvents(svg, 
   joint1Inputs, joint2Inputs,
-  createModelButton, clearCanvasButton, downloadButton);
+  createModelButton, clearCanvasButton, downloadButton, toggleButton);
 
