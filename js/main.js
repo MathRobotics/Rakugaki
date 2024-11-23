@@ -120,32 +120,11 @@ createModelButton.addEventListener("click", () => {
 
 // SVGをダウンロード
 downloadButton.addEventListener("click", () => {
-  // **1. バウンディングボックスを取得**
-  const bbox = svg.getBBox();
-
-  // **2. 新しいSVG要素を作成**
-  const clonedSvg = svg.cloneNode(true);
-  clonedSvg.setAttribute("width", bbox.width);
-  clonedSvg.setAttribute("height", bbox.height);
-  clonedSvg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
-
-  // **3. SVGをシリアライズしてBlobを作成**
-  const serializer = new XMLSerializer();
-  const svgData = serializer.serializeToString(clonedSvg);
-  const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
-  const url = URL.createObjectURL(svgBlob);
-
-  // **4. ダウンロードリンクを作成してクリック**
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "trimmed_drawing.svg";
-  link.click();
-
-  // **5. メモリ解放**
-  URL.revokeObjectURL(url);
+  Utils.downloadTrimmedSVG();
 });
 
 // キャンバス全体を初期化
 clearCanvasButton.addEventListener("click", () => {
-  svg.innerHTML = ''; // SVG要素内のすべての子要素を削除
+  Utils.clearCanvas();
 });
+
