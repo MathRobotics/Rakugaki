@@ -1,4 +1,5 @@
 import * as Mlink from './mlink.js';
+import { initializeEvents } from './event.js'; 
 
 // DOM要素を取得
 const svg = document.getElementById("drawing-area");
@@ -11,38 +12,9 @@ const joint1Inputs = Mlink.initializeJointInputs("j1");
 const joint2Inputs = Mlink.initializeJointInputs("j2");
 
 const toggleButton = document.getElementById("additional-line");
-let isAdditionalLineOn = false;
 let isDragging = false;
 let offsetX, offsetY, selectedElement;
 
-toggleButton.addEventListener("click", () => {
-  isAdditionalLineOn = !isAdditionalLineOn;
-  toggleButton.classList.toggle("on", isAdditionalLineOn); // クラスをトグル
-  toggleButton.textContent = isAdditionalLineOn ? "Additional Line On" : "Additional Line Off";
-
-  triggerRedraw();
-});
-
-// **1. 再描画関数**
-function triggerRedraw() {
-  clearCanvasButton.click();
-  createModelButton.click();
-}
-
-// **2. 入力リスナーをセットアップ**
-function setupJointInputListeners(jointInputs) {
-  Object.values(jointInputs).forEach((input) => {
-    input.addEventListener("input", triggerRedraw);
-  });
-
-  jointInputs.axis.addEventListener("input", () => {
-    jointInputs.axisValue.textContent = jointInputs.axis.value;
-    triggerRedraw();
-  });
-}
-
-setupJointInputListeners(joint1Inputs);
-setupJointInputListeners(joint2Inputs);
 
 // **2. ドラッグ機能を追加**
 svg.addEventListener("mousedown", (event) => {
@@ -93,38 +65,7 @@ svg.addEventListener("mouseleave", () => {
   }
 });
 
-// モデルの描画
-createModelButton.addEventListener("click", () => {
-  const joint1Data = {
-    cx: parseFloat(joint1Inputs.cx.value),
-    cy: parseFloat(joint1Inputs.cy.value),
-    radius: parseFloat(joint1Inputs.radius.value),
-    axis: parseFloat(joint1Inputs.axis.value),
-  };
-
-  const joint2Data = {
-    cx: parseFloat(joint2Inputs.cx.value),
-    cy: parseFloat(joint2Inputs.cy.value),
-    radius: parseFloat(joint2Inputs.radius.value),
-    axis: parseFloat(joint2Inputs.axis.value),
-  };
-
-  if (Object.values(joint1Data).some(isNaN) || Object.values(joint2Data).some(isNaN)) {
-    alert("Please enter valid values for all joints.");
-    return;
-  }
-
-  // 曲線を描画
-  Mlink.drawBody(svg, joint1Data, joint2Data, isAdditionalLineOn); 
-});
-
-// SVGをダウンロード
-downloadButton.addEventListener("click", () => {
-  Utils.downloadTrimmedSVG();
-});
-
-// キャンバス全体を初期化
-clearCanvasButton.addEventListener("click", () => {
-  Utils.clearCanvas();
-});
+initializeEvents(svg, 
+  joint1Inputs, joint2Inputs,
+  createModelButton, clearCanvasButton, downloadButton);
 
