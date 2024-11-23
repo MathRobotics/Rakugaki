@@ -11,6 +11,16 @@ const mLink = {
   body_curve_param : 0.5 
 };
 
+function initializeJointInputs(prefix) {
+  return {
+    cx: document.getElementById(`${prefix}-cx-input`),
+    cy: document.getElementById(`${prefix}-cy-input`),
+    radius: document.getElementById(`${prefix}-radius-input`),
+    axis: document.getElementById(`${prefix}-axis-input`),
+    axisValue: document.getElementById(`${prefix}-axis-value`),
+  };
+}
+
 function drawBody(svg, startJoint, endJoint, isAdditionalLineOn, controlDistance = mLink.control_length) { 
  // 始点の制御点を計算
   const control1X = startJoint.cx + Math.cos(startJoint.axis) * controlDistance;

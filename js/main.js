@@ -7,17 +7,8 @@ const clearCanvasButton = document.getElementById("clear-canvas");
 
 const createModelButton = document.getElementById("create-model");
 
-const joint1CxInput = document.getElementById("j1-cx-input");
-const joint1CyInput = document.getElementById("j1-cy-input");
-const joint1RadiusInput = document.getElementById("j1-radius-input");
-const joint1AxisInput = document.getElementById("j1-axis-input");
-const joint1AxisValue = document.getElementById("j1-axis-value");
-
-const joint2CxInput = document.getElementById("j2-cx-input");
-const joint2CyInput = document.getElementById("j2-cy-input");
-const joint2RadiusInput = document.getElementById("j2-radius-input");
-const joint2AxisInput = document.getElementById("j2-axis-input");
-const joint2AxisValue = document.getElementById("j2-axis-value");
+const joint1Inputs = Mlink.initializeJointInputs("j1");
+const joint2Inputs = Mlink.initializeJointInputs("j2");
 
 const toggleButton = document.getElementById("additional-line");
 let isAdditionalLineOn = false;
@@ -29,55 +20,29 @@ toggleButton.addEventListener("click", () => {
   toggleButton.classList.toggle("on", isAdditionalLineOn); // クラスをトグル
   toggleButton.textContent = isAdditionalLineOn ? "Additional Line On" : "Additional Line Off";
 
-  // 再描画（必要に応じて）
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
+  triggerRedraw();
 });
 
-joint1CxInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
+// **1. 再描画関数**
+function triggerRedraw() {
+  clearCanvasButton.click();
+  createModelButton.click();
+}
 
-joint1CyInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
+// **2. 入力リスナーをセットアップ**
+function setupJointInputListeners(jointInputs) {
+  Object.values(jointInputs).forEach((input) => {
+    input.addEventListener("input", triggerRedraw);
+  });
 
-joint1RadiusInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
+  jointInputs.axis.addEventListener("input", () => {
+    jointInputs.axisValue.textContent = jointInputs.axis.value;
+    triggerRedraw();
+  });
+}
 
-joint2CxInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
-
-joint2CyInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
-
-joint2RadiusInput.addEventListener("input", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
-
-// 傾きスライダーの値をリアルタイムで表示
-joint1AxisInput.addEventListener("input", () => {
-  joint1AxisValue.textContent = joint1AxisInput.value;
-
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
-
-joint2AxisInput.addEventListener("input", () => {
-  joint2AxisValue.textContent = joint2AxisInput.value;
-
-  clearCanvasButton.click(); // キャンバスをクリア
-  createModelButton.click(); // 再描画
-});
+setupJointInputListeners(joint1Inputs);
+setupJointInputListeners(joint2Inputs);
 
 // **2. ドラッグ機能を追加**
 svg.addEventListener("mousedown", (event) => {
@@ -130,39 +95,23 @@ svg.addEventListener("mouseleave", () => {
 
 // モデルの描画
 createModelButton.addEventListener("click", () => {
-  clearCanvasButton.click(); // キャンバスをクリア
-
-  const j1_cx = parseFloat(joint1CxInput.value); 
-  const j1_cy = parseFloat(joint1CyInput.value); 
-  const j1_radius = parseFloat(joint1RadiusInput.value); 
-  const j1_axis = parseFloat(joint1AxisInput.value);  
-
-  const j2_cx = parseFloat(joint2CxInput.value); 
-  const j2_cy = parseFloat(joint2CyInput.value); 
-  const j2_radius = parseFloat(joint2RadiusInput.value); 
-  const j2_axis = parseFloat(joint2AxisInput.value);  
-
-  // 入力値が有効か確認
-  if (
-    isNaN(j1_cx) || isNaN(j1_cy) || isNaN(j1_radius) ||
-    isNaN(j2_cx) || isNaN(j2_cy) || isNaN(j2_radius)
-  ) {
-    alert("Please enter valid values for all joints.");
-    return;
-  }
-
   const joint1Data = {
-    cx: j1_cx,
-    cy: j1_cy,
-    axis: j1_axis,
-    radius: j1_radius
-  }
+    cx: parseFloat(joint1Inputs.cx.value),
+    cy: parseFloat(joint1Inputs.cy.value),
+    radius: parseFloat(joint1Inputs.radius.value),
+    axis: parseFloat(joint1Inputs.axis.value),
+  };
 
   const joint2Data = {
-    cx: j2_cx,
-    cy: j2_cy,
-    axis: j2_axis,
-    radius: j2_radius
+    cx: parseFloat(joint2Inputs.cx.value),
+    cy: parseFloat(joint2Inputs.cy.value),
+    radius: parseFloat(joint2Inputs.radius.value),
+    axis: parseFloat(joint2Inputs.axis.value),
+  };
+
+  if (Object.values(joint1Data).some(isNaN) || Object.values(joint2Data).some(isNaN)) {
+    alert("Please enter valid values for all joints.");
+    return;
   }
 
   // 曲線を描画
