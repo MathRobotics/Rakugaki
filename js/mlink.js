@@ -78,4 +78,4 @@ function drawBody(svg, startJoint, endJoint, isAdditionalLineOn, controlDistance
                     end_curve1, end_curve2, universalColors.blue);
 }
 
-export { drawBody, initializeJointInputs, setupInputListeners };
+export { drawBody, initializeJointInputs };
