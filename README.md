@@ -1,4 +1,4 @@
-# Katagaki (型描): Vector Drawing App
+# Rakugaki : Vector Drawing App
 
 A web-based application to create, manipulate, and export vector drawings using SVG. This project enables users to draw joints, link them with curves, and download the resulting vector graphics.
 
