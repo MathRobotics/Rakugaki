@@ -1,4 +1,4 @@
-import { drawBody } from './mlink.js'
+import * as Mlink from './mlink.js';
 
 // DOM要素を取得
 const svg = document.getElementById("drawing-area");
@@ -166,7 +166,7 @@ createModelButton.addEventListener("click", () => {
   }
 
   // 曲線を描画
-  drawBody(svg, joint1Data, joint2Data, isAdditionalLineOn); 
+  Mlink.drawBody(svg, joint1Data, joint2Data, isAdditionalLineOn); 
 });
 
 // SVGをダウンロード

@@ -11,7 +11,7 @@ const mLink = {
   body_curve_param : 0.5 
 };
 
-export function drawBody(svg, startJoint, endJoint, isAdditionalLineOn, controlDistance = mLink.control_length) { 
+function drawBody(svg, startJoint, endJoint, isAdditionalLineOn, controlDistance = mLink.control_length) { 
  // 始点の制御点を計算
   const control1X = startJoint.cx + Math.cos(startJoint.axis) * controlDistance;
   const control1Y = startJoint.cy - Math.sin(startJoint.axis) * controlDistance;
@@ -77,3 +77,5 @@ export function drawBody(svg, startJoint, endJoint, isAdditionalLineOn, controlD
   drawPartialCircle(svg, endJoint.cx, endJoint.cy, endJoint.radius+mLink.joint_body_width,
                     end_curve1, end_curve2, universalColors.blue);
 }
+
+export { drawBody, initializeJointInputs, setupInputListeners };
